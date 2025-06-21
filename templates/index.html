@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App - Real-time Weather Information</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1 class="title">
+                <i class="fas fa-cloud-sun"></i>
+                Weather App
+            </h1>
+            <p class="subtitle">Get real-time weather information for any city</p>
+        </header>
+
+        <main class="main-content">
+            <!-- Search Form -->
+            <form class="search-form" method="POST" action="{{ url_for('get_weather') }}">
+                <div class="search-container">
+                    <input 
+                        type="text" 
+                        name="city" 
+                        placeholder="Enter city name..." 
+                        class="search-input"
+                        required
+                        autocomplete="off"
+                    >
+                    <button type="submit" class="search-button">
+                        <i class="fas fa-search"></i>
+                        Search
+                    </button>
+                </div>
+            </form>
+
+            <!-- Flash Messages -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <div class="messages">
+                        {% for category, message in messages %}
+                            <div class="message message-{{ category }}">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+
+            <!-- Weather Display -->
+            {% if weather %}
+            <div class="weather-card">
+                <div class="weather-header">
+                    <div class="location">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <h2>{{ weather.city }}, {{ weather.country }}</h2>
+                    </div>
+                    <div class="weather-icon">
+                        <img 
+                            src="https://openweathermap.org/img/wn/{{ weather.icon }}@2x.png" 
+                            alt="{{ weather.description }}"
+                            class="icon"
+                        >
+                    </div>
+                </div>
+
+                <div class="temperature-section">
+                    <div class="main-temp">{{ weather.temperature }}°C</div>
+                    <div class="description">{{ weather.description }}</div>
+                    <div class="feels-like">Feels like {{ weather.feels_like }}°C</div>
+                </div>
+
+                <div class="weather-details">
+                    <div class="detail-item">
+                        <i class="fas fa-tint"></i>
+                        <div class="detail-content">
+                            <span class="detail-label">Humidity</span>
+                            <span class="detail-value">{{ weather.humidity }}%</span>
+                        </div>
+                    </div>
+                    
+                    <div class="detail-item">
+                        <i class="fas fa-wind"></i>
+                        <div class="detail-content">
+                            <span class="detail-label">Wind Speed</span>
+                            <span class="detail-value">{{ weather.wind_speed }} km/h</span>
+                        </div>
+                    </div>
+                    
+                    <div class="detail-item">
+                        <i class="fas fa-thermometer-half"></i>
+                        <div class="detail-content">
+                            <span class="detail-label">Pressure</span>
+                            <span class="detail-value">{{ weather.pressure }} hPa</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <div class="empty-state">
+                <i class="fas fa-cloud-sun-rain"></i>
+                <h3>Ready to check the weather?</h3>
+                <p>Enter a city name above to get started with real-time weather information.</p>
+            </div>
+            {% endif %}
+        </main>
+
+        <footer class="footer">
+            <p>Copy right &#169; 2025</p>
+        </footer>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
